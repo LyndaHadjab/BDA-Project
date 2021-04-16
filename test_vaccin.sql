@@ -58,12 +58,27 @@ END;
 $$LANGUAGE PLPGSQL;
 
 /* test the function */
-SELECT select_ntotdos1_ntotdos2 ('1','2021-04-05', 'AstraZeneca');
-SELECT vaccination_insert ('1','AstraZeneca','2021-04-10',12,23);
-SELECT select_ntotdos1_ntotdos2_between ('1','2021-04-05','2021-04-10','AstraZeneca');
+SELECT select_ntotdos1_ntotdos2('1','2021-04-05', 'AstraZeneca');
+SELECT vaccination_insert('1','AstraZeneca','2021-04-10',12,23);
+SELECT select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
 select vaccination_update_dos1('1','AstraZeneca','2021-04-10',120);
 select vaccination_update_dos2('1','AstraZeneca','2021-04-10',230);
-SELECT select_ntotdos1_ntotdos2_between ('1','2021-04-05','2021-04-10','AstraZeneca');
-select vaccination_delete ('1','AstraZeneca','2021-04-10');
-SELECT select_ntotdos1_ntotdos2_between ('1','2021-04-05','2021-04-10','AstraZeneca');
+SELECT select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
+select vaccination_delete('1','AstraZeneca','2021-04-10');
+SELECT select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
 SELECT vaccin_insert('Pfizer');
+
+
+/* le stockage d'un vaccin à une date donné et à une date donné */
+
+CREATE OR REPLACE FUNCTION test_vaccin_with_stockage_vaccin(_dep VARCHAR, _jour DATE, type_vaccin VARCHAR) 
+        RETURNS SETOF stockage_vaccin_departement AS
+$$
+BEGIN
+    RETURN QUERY SELECT *  FROM stockage_vaccin_departement WHERE code_departement = _dep 
+        AND  id_stockage_vaccin IN (SELECT id_stockage_vaccin FROM stockage_vaccin WHERE date_stockage = _jour)
+        AND id_vaccin IN ( SELECT id_vaccin FROM vaccin WHERE type_de_vaccin = type_vaccin);
+END;
+$$ LANGUAGE PLPGSQL;
+
+SELECT test_vaccin_with_stockage_vaccin ('6','2021-01-24','testedit');
