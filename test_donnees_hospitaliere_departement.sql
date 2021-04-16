@@ -2,10 +2,10 @@
 /* Function 1 : Une fonction qui permet de chercher toutes les données hospitaliere par département */
 
 CREATE OR REPLACE FUNCTION select_donnees_hospi_departement(code_departement VARCHAR) 
-        RETURNS SETOF Donnees_Hospitaliere AS 
+        RETURNS SETOF donnees_hospitaliere AS 
 $$
 BEGIN
-    RETURN  QUERY SELECT * FROM Donnees_Hospitaliere AS D WHERE D.dep = code_departement;
+    RETURN  QUERY SELECT * FROM donnees_hospitaliere AS D WHERE D.dep = code_departement;
     IF NOT FOUND THEN 
         RAISE NOTICE 'aucune données hospitalere pour ce département % ', code_departement;
     END IF;
@@ -17,10 +17,10 @@ $$ LANGUAGE PLPGSQL;
 /* Function 2: Une fonction qui permet de retourner la données hositaliere par jour de chaque département */
 
 CREATE OR REPLACE FUNCTION select_donnees_hospi_departement_jour(code_departement VARCHAR, jourDonne DATE)
-        RETURNS SETOF Donnees_Hospitaliere AS
+        RETURNS SETOF donnees_hospitaliere AS
 $$ 
 BEGIN
-    RETURN QUERY SELECT * FROM Donnees_Hospitaliere AS D 
+    RETURN QUERY SELECT * FROM donnees_hospitaliere AS D 
                 WHERE D.dep = code_departement  AND D.jour = jourDonne;
 
     IF NOT FOUND THEN
@@ -35,10 +35,10 @@ $$ LANGUAGE PLPGSQL;
 /*Function 3: une fonction qui retourne une donnees hopitaliere de département par sexe & jour  */
 
 CREATE OR REPLACE FUNCTION select_donnees_hospi_departement_jour_sexe(code_departement VARCHAR, jourDonne DATE, sexeDonne INTEGER)
-        RETURNS SETOF Donnees_Hospitaliere AS
+        RETURNS SETOF donnees_hospitaliere AS
 $$ 
 BEGIN
-    RETURN QUERY SELECT * FROM Donnees_Hospitaliere AS D 
+    RETURN QUERY SELECT * FROM donnees_hospitaliere AS D 
                 WHERE D.dep = code_departement  AND D.jour = jourDonne AND D.sexe = sexeDonne ;
 
     IF NOT FOUND THEN

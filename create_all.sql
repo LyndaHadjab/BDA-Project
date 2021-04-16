@@ -1,35 +1,33 @@
-DROP TABLE IF EXISTS Test;
-DROP TABLE IF EXISTS Lieu_de_Vaccination;
-DROP TABLE IF EXISTS Stockage_Vaccin_Departement;
-DROP TABLE IF EXISTS Vaccination ;
-DROP TABLE IF EXISTS Stockage_Vaccin ;
-DROP TABLE IF EXISTS Donnees_Hospitaliere ;
-DROP TABLE IF EXISTS Vaccin ;
-DROP TABLE IF EXISTS Rendez_vous_par_departement;
-DROP TABLE IF EXISTS Rendez_vous_par_departement_trigger;
-DROP TABLE IF EXISTS Departement;
-DROP TABLE IF EXISTS Adresse;
-DROP TABLE IF EXISTS Site_Prelevement_pour_les_Tests;
-DROP TABLE IF EXISTS adresse_trigger;
-DROP TABLE IF EXISTS stocks_doses_vaccin_trigger;
+DROP TABLE IF EXISTS test CASCADE;
+DROP TABLE IF EXISTS lieu_de_vaccination CASCADE;
+DROP TABLE IF EXISTS stockage_vaccin_departement CASCADE;
+DROP TABLE IF EXISTS vaccination CASCADE;
+DROP TABLE IF EXISTS stockage_vaccin CASCADE;
+DROP TABLE IF EXISTS donnees_hospitaliere;
+DROP TABLE IF EXISTS vaccin CASCADE;
+DROP TABLE IF EXISTS rendez_vous_par_departement CASCADE;
+DROP TABLE IF EXISTS rendez_vous_par_departement_trigger CASCADE;
+DROP TABLE IF EXISTS departement CASCADE;
+DROP TABLE IF EXISTS adresse CASCADE;
+DROP TABLE IF EXISTS site_prelevement_pour_les_tests CASCADE;
+DROP TABLE IF EXISTS adresse_trigger CASCADE;
+DROP TABLE IF EXISTS stocks_doses_vaccin_trigger CASCADE;
 
-CREATE TABLE Vaccin(
+/* Remarque : DROP CASCADE pour supprimer aussi les objets dependants de cette table */
+
+CREATE TABLE vaccin(
 	id_vaccin      SERIAL PRIMARY kEY,
 	type_de_vaccin VARCHAR NOT NULL UNIQUE 
 );
 
-CREATE INDEX vaccin_type_de_vaccin ON Vaccin (type_de_vaccin);
-
-CREATE TABLE Departement(
+CREATE TABLE departement(
 	code_departement VARCHAR PRIMARY KEY,
 	nom_departement  VARCHAR NOT NULL UNIQUE,
 	code_region      VARCHAR NOT NULL,
 	nom_region       VARCHAR NOT NULL
 );
 
-CREATE INDEX departement_nom_departement ON Departement (nom_departement);
-
-CREATE TABLE Vaccination (
+CREATE TABLE vaccination (
 	dep VARCHAR NOT NULL,
 	vaccin INTEGER NOT NULL ,
 	jour DATE NOT NULL,
@@ -38,21 +36,19 @@ CREATE TABLE Vaccination (
 
 	PRIMARY KEY (dep, vaccin, jour),
 	CONSTRAINT fk_departement FOREIGN KEY (dep) 
-	  REFERENCES Departement(code_departement) ON DELETE CASCADE,
+	  REFERENCES departement(code_departement) ON UPDATE CASCADE ON DELETE CASCADE,
 
 	CONSTRAINT fk_vaccin FOREIGN kEY (vaccin)
-		REFERENCES Vaccin (id_vaccin) ON DELETE CASCADE
+		REFERENCES vaccin (id_vaccin) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE Stockage_Vaccin(
+CREATE TABLE stockage_vaccin(
 	id_stockage_vaccin SERIAL PRIMARY KEY,
 	date_stockage      DATE   NOT NULL
 );
 
-CREATE INDEX stockage_vaccin_date_stockage ON Stockage_Vaccin (date_stockage);
-
-CREATE TABLE Donnees_Hospitaliere(
-	dep                     VARCHAR NOT NULL REFERENCES Departement,	
+CREATE TABLE donnees_hospitaliere(
+	dep                     VARCHAR NOT NULL REFERENCES departement ON UPDATE CASCADE ON DELETE CASCADE,	
 	sexe                    INTEGER NOT NULL CHECK (sexe >=0 AND sexe<=2),
 	jour                    DATE NOT NULL,
 	hosp 					INTEGER CHECK (hosp >= 0),  
@@ -66,8 +62,8 @@ CREATE TABLE Donnees_Hospitaliere(
 	PRIMARY KEY (dep, sexe, jour)
 );
 
-CREATE TABLE Rendez_vous_par_departement(
-	id_departement     VARCHAR REFERENCES Departement,
+CREATE TABLE rendez_vous_par_departement(
+	id_departement     VARCHAR REFERENCES departement ON UPDATE CASCADE ON DELETE CASCADE,
 	rang_vaccinal      INTEGER NOT NULL,
 	date_debut_semaine Date    NOT NULL,
 	nb                 INTEGER NOT NULL CHECK (nb >= 0),
@@ -75,19 +71,19 @@ CREATE TABLE Rendez_vous_par_departement(
 	PRIMARY kEY (id_departement, rang_vaccinal, date_debut_semaine)
 );
 
-CREATE TABLE Test(
-	id_departement  VARCHAR  NOT NULL,
-	jour            DATE    ,
+CREATE TABLE test(
+	id_departement  VARCHAR NOT NULL,
+	jour            DATE,
 	pop             INTEGER NOT NULL,
 	t               INTEGER NOT NULL,
 
 	PRIMARY KEY (id_departement, jour),
 	
 	CONSTRAINT fk_id_departement FOREIGN KEY (id_departement) 
-	  REFERENCES Departement(code_departement) ON DELETE CASCADE
+	  REFERENCES departement(code_departement) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE Adresse(
+CREATE TABLE adresse(
 	id_adresse 	SERIAL PRIMARY KEY,
 	adr_num 	VARCHAR ,
 	adr_voie 	VARCHAR,
@@ -96,7 +92,7 @@ CREATE TABLE Adresse(
 	com_nom 	VARCHAR 
 );
 
-CREATE TABLE Lieu_de_Vaccination(
+CREATE TABLE lieu_de_vaccination(
 	gid 				VARCHAR PRIMARY KEY,
 	nom 				VARCHAR ,
 	arrete_pref_numero 	VARCHAR,
@@ -111,7 +107,7 @@ CREATE TABLE Lieu_de_Vaccination(
 	id_structure_adresse INTEGER ,
 	_userid_creation     INTEGER,
 	_userid_modification INTEGER,
-	_edit_datemaj 		Date ,
+	_edit_datemaj 		Date,
 	lieu_accessibilite 	VARCHAR,
 	rdv_lundi 			VARCHAR,
 	rdv_mardi 			VARCHAR,
@@ -133,13 +129,13 @@ CREATE TABLE Lieu_de_Vaccination(
 	reserve_professionels_sante Boolean,
 
 	CONSTRAINT fk_id_adresse FOREIGN KEY (id_adresse) 
-			REFERENCES Adresse(id_adresse) ON DELETE CASCADE,
+			REFERENCES adresse(id_adresse) ON UPDATE CASCADE ON DELETE CASCADE,
 
 	CONSTRAINT fk_id_structure_adresse FOREIGN KEY (id_structure_adresse) 
-	  		REFERENCES Adresse(id_adresse) ON DELETE CASCADE
+	  		REFERENCES adresse(id_adresse) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE Site_Prelevement_pour_les_Tests (
+CREATE TABLE site_prelevement_pour_les_tests (
 	ID 				VARCHAR PRIMARY KEY,
 	id_ej 			VARCHAR NOT NULL,
 	finess 			VARCHAR NOT NULL,
@@ -160,14 +156,10 @@ CREATE TABLE Site_Prelevement_pour_les_Tests (
 	date_modif 		DATE
 );
 
-CREATE INDEX site_prelevement_pour_les_tests_adresse ON Site_Prelevement_pour_les_Tests (adresse);
-
-CREATE INDEX site_prelevement_pour_les_tests_rs ON Site_Prelevement_pour_les_Tests (rs);
-
-CREATE TABLE Stockage_Vaccin_Departement(
-	code_departement    VARCHAR REFERENCES Departement,
-	id_stockage_vaccin INTEGER  REFERENCES Stockage_Vaccin,
-	id_vaccin          INTEGER REFERENCES Vaccin,
+CREATE TABLE stockage_vaccin_departement(
+	code_departement    VARCHAR REFERENCES departement ON UPDATE CASCADE ON DELETE CASCADE,
+	id_stockage_vaccin INTEGER  REFERENCES stockage_vaccin ON UPDATE CASCADE ON DELETE CASCADE,
+	id_vaccin          INTEGER REFERENCES vaccin ON UPDATE CASCADE ON DELETE CASCADE,
 	nb_doses           INTEGER  CHECK (nb_doses >= 0),
 	nb_ucd             INTEGER  CHECK (nb_ucd >= 0),
 
@@ -228,7 +220,7 @@ CREATE TABLE stocks_doses_vaccin_trigger(
 	_date Date 
 );
 
-CREATE TABLE Rendez_vous_par_departement_trigger(
+CREATE TABLE rendez_vous_par_departement_trigger(
 	code_region        VARCHAR ,
 	region             VARCHAR,
 	dep                VARCHAR,
@@ -236,6 +228,12 @@ CREATE TABLE Rendez_vous_par_departement_trigger(
 	date_debut_semaine Date,
 	nb                 INTEGER
 );
+
+CREATE INDEX vaccin_type_de_vaccin ON vaccin (type_de_vaccin);
+CREATE INDEX departement_nom_departement ON departement (nom_departement);
+CREATE INDEX stockage_vaccin_date_stockage ON stockage_vaccin (date_stockage);
+CREATE INDEX site_prelevement_pour_les_tests_adresse ON site_prelevement_pour_les_tests (adresse);
+CREATE INDEX site_prelevement_pour_les_tests_rs ON site_prelevement_pour_les_tests (rs);
 
 \i /home/aurora/Bureau/projetBDD/create_trigger.sql;
 \i /home/aurora/Bureau/projetBDD/insert_data.sql;

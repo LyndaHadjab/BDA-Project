@@ -35,22 +35,22 @@ $$
 	DECLARE ligne INTEGER;
 BEGIN 
 	IF TG_OP = 'INSERT' THEN 
-		INSERT INTO Adresse (adr_num, adr_voie, com_cp, com_insee, com_nom)
-		   VALUES (NEW.adr_num, NEW.adr_voie, NEW.com_cp, NEW.com_insee, NEW.com_nom) RETURNING Adresse.id_adresse INTO id_adr;
+		INSERT INTO adresse (adr_num, adr_voie, com_cp, com_insee, com_nom)
+		   VALUES (NEW.adr_num, NEW.adr_voie, NEW.com_cp, NEW.com_insee, NEW.com_nom) RETURNING adresse.id_adresse INTO id_adr;
 
-		SELECT id_adresse INTO ligne FROM  Adresse WHERE NEW.structure_voie = adr_voie AND NEW.structure_cp  = com_cp
+		SELECT id_adresse INTO ligne FROM  adresse WHERE NEW.structure_voie = adr_voie AND NEW.structure_cp  = com_cp
 		   AND NEW.structure_insee = com_insee AND NEW.structure_com = com_nom;
 
 		/*raise notice 'Value found: % %', ligne,id_adr ;*/
 
 		IF FOUND THEN  id_structure_adresse = ligne;
-				 ELSE  INSERT INTO Adresse (adr_num, adr_voie, com_cp, com_insee, com_nom)
+				 ELSE  INSERT INTO adresse (adr_num, adr_voie, com_cp, com_insee, com_nom)
 		   				VALUES (NEW.structure_num, NEW.structure_voie, NEW.structure_cp, 
-		   					NEW.structure_insee, NEW.structure_com) RETURNING Adresse.id_adresse INTO id_structure_adresse;
+		   					NEW.structure_insee, NEW.structure_com) RETURNING adresse.id_adresse INTO id_structure_adresse;
 	
 		END IF;
 
-		INSERT INTO Lieu_de_Vaccination (gid, nom, arrete_pref_numero, xy_precis, id_adr, id_adresse, lat_coor1, long_coor1,
+		INSERT INTO lieu_de_vaccination (gid, nom, arrete_pref_numero, xy_precis, id_adr, id_adresse, lat_coor1, long_coor1,
 			structure_siren, structure_type, structure_rais, id_structure_adresse, _edit_datemaj, lieu_accessibilite,
 			rdv_lundi,rdv_mardi, rdv_mercredi, rdv_jeudi, rdv_vendredi, rdv_samedi, rdv_dimanche, rdv, date_fermeture,
 			date_ouverture, rdv_site_web, rdv_tel, rdv_tel2, rdv_modalites, rdv_consultation_prevaccination, centre_svi_repondeur, 
@@ -80,21 +80,21 @@ DECLARE departement VARCHAR;
 
 BEGIN
 	/*insert type of vaccin to vaccin table*/
-	SELECT id_vaccin INTO ligne FROM Vaccin WHERE  type_de_vaccin = New.type_de_vaccin;
-	IF (NOT FOUND) THEN INSERT INTO Vaccin(type_de_vaccin) VALUES (NEW.type_de_vaccin) RETURNING Vaccin.id_vaccin INTO ligne;
+	SELECT id_vaccin INTO ligne FROM vaccin WHERE  type_de_vaccin = New.type_de_vaccin;
+	IF (NOT FOUND) THEN INSERT INTO vaccin(type_de_vaccin) VALUES (NEW.type_de_vaccin) RETURNING vaccin.id_vaccin INTO ligne;
 	END IF;
 
-	/* Insert into Stockage_Vaccin */
+	/* Insert into stockage_vaccin */
 	
 
-	SELECT id_stockage_vaccin INTO ligne_1 FROM Stockage_Vaccin WHERE  date_stockage = New._date;
-	IF (NOT FOUND) THEN INSERT INTO Stockage_Vaccin(date_stockage) VALUES (NEW._date) RETURNING Stockage_Vaccin.id_stockage_vaccin INTO ligne_1;
+	SELECT id_stockage_vaccin INTO ligne_1 FROM stockage_vaccin WHERE  date_stockage = New._date;
+	IF (NOT FOUND) THEN INSERT INTO stockage_vaccin(date_stockage) VALUES (NEW._date) RETURNING stockage_vaccin.id_stockage_vaccin INTO ligne_1;
 	END IF;
 
-	/* INSERT INTO Stockage_Vaccin_Departement */
+	/* INSERT INTO stockage_vaccin_Departement */
 
 	/*raise notice 'Value found: % ', NEW.code_departement ;*/
-	INSERT INTO Stockage_Vaccin_Departement VALUES (NEW.code_departement, ligne_1, ligne, New.nb_doses, NEW.nb_ucd);
+	INSERT INTO stockage_vaccin_Departement VALUES (NEW.code_departement, ligne_1, ligne, New.nb_doses, NEW.nb_ucd);
 
 	RETURN NULL;
 END;
@@ -116,7 +116,7 @@ BEGIN
 	New.dep = LTRIM(New.dep, '0');
 
 	SELECT code_departement INTO ligne FROM departement  WHERE code_departement = New.dep; 
-	SELECT type_de_vaccin INTO ligne_1 FROM Vaccin  WHERE id_vaccin = New.vaccin; 
+	SELECT type_de_vaccin INTO ligne_1 FROM vaccin  WHERE id_vaccin = New.vaccin; 
 	
 	IF (ligne != '' and ligne_1 != '') THEN  RETURN New;
 	END IF;
@@ -125,9 +125,9 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER Vaccination_audit
+CREATE TRIGGER vaccination_audit
 	BEFORE INSERT OR UPDATE
-	ON Vaccination
+	ON vaccination
 	FOR EACH ROW EXECUTE PROCEDURE vaccination_edit_id_departement();
 
 
@@ -149,7 +149,7 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER donnees_hospitaliere_audit
 	BEFORE INSERT OR UPDATE
-	ON Donnees_Hospitaliere
+	ON donnees_hospitaliere
 	FOR EACH ROW EXECUTE PROCEDURE donnees_hospitaliere_edit_id_departement();
 
 CREATE OR REPLACE FUNCTION rendez_vous_par_departement_import_csv() RETURNS TRIGGER AS
@@ -160,7 +160,7 @@ BEGIN
 
 	SELECT code_departement INTO ligne FROM departement  WHERE code_departement = New.dep; 
 
-	IF (ligne != '') THEN INSERT INTO Rendez_vous_par_departement VALUES (New.dep, New.rang_vaccinal, New.date_debut_semaine, New.nb);
+	IF (ligne != '') THEN INSERT INTO rendez_vous_par_departement VALUES (New.dep, New.rang_vaccinal, New.date_debut_semaine, New.nb);
 	END IF;
 	RETURN NULL;
 	
@@ -169,5 +169,5 @@ $$ LANGUAGE PLPGSQL;
 
 CREATE TRIGGER rendez_vous_par_departement_audit
 	BEFORE INSERT OR UPDATE
-	ON Rendez_vous_par_departement_trigger
+	ON rendez_vous_par_departement_trigger
 	FOR EACH ROW EXECUTE PROCEDURE rendez_vous_par_departement_import_csv();
