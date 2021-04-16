@@ -81,4 +81,35 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-SELECT test_vaccin_with_stockage_vaccin ('6','2021-01-24','testedit');
+SELECT test_vaccin_with_stockage_vaccin('6','2021-01-24','testedit');
+
+/* tester les fonctionnalité de la table tests */
+
+/*ajouter un test avec un departement existant */
+SELECT test_insert('1','2021-04-10',2341,3133);
+SELECT * from test WHERE id_departement = '1' AND jour = '2021-04-10'; 
+
+/*ajouter un test avec un departement inexistant dans notre système*/
+SELECT test_insert('9875','2021-04-10',2341,3133);
+SELECT * from test WHERE id_departement = '9875' AND jour = '2021-04-10'; 
+
+/*Modifier la Population ou le nombre de test effectuer à une date donné pour un département donnée */
+SELECT test_update('1','2021-04-10',2341,42357);
+SELECT * from test WHERE id_departement = '1' AND jour = '2021-04-10'; 
+
+/*Nombre de test négative => une exception est généré*/
+SELECT test_update('1','2021-04-10',2341,-42357);
+
+/*Ajouter le nombre de test effectuer pour un département à une date donné */
+SELECT test_add_t_number('1','2021-04-10',2);
+SELECT * from test WHERE id_departement = '1' AND jour = '2021-04-10'; 
+
+/*Si on essaye d'ajouter un nombre négative une exception est généré*/
+SELECT test_add_t_number('1','2021-04-10',-2);
+
+/*soustraire le nombre de test effectuer pour un département à une date donné */
+SELECT test_sub_t_number('1','2021-04-10',2);
+SELECT * from test WHERE id_departement = '1' AND jour = '2021-04-10'; 
+
+/*Si on essaye de soustraire un nombre négative une exception est généré*/
+SELECT test_sub_t_number('1','2021-04-10',-2);
