@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS lieu_de_vaccination CASCADE;
 DROP TABLE IF EXISTS stockage_vaccin_departement CASCADE;
 DROP TABLE IF EXISTS vaccination CASCADE;
 DROP TABLE IF EXISTS stockage_vaccin CASCADE;
-DROP TABLE IF EXISTS donnees_hospitaliere;
+DROP TABLE IF EXISTS donnees_hospitaliere CASCADE;
 DROP TABLE IF EXISTS vaccin CASCADE;
 DROP TABLE IF EXISTS rendez_vous_par_departement CASCADE;
 DROP TABLE IF EXISTS rendez_vous_par_departement_trigger CASCADE;
@@ -234,6 +234,8 @@ CREATE INDEX departement_nom_departement ON departement (nom_departement);
 CREATE INDEX stockage_vaccin_date_stockage ON stockage_vaccin (date_stockage);
 CREATE INDEX site_prelevement_pour_les_tests_adresse ON site_prelevement_pour_les_tests (adresse);
 CREATE INDEX site_prelevement_pour_les_tests_rs ON site_prelevement_pour_les_tests (rs);
+CREATE INDEX adresse_adr_voie ON adresse (adr_voie);
+CREATE INDEX adresse_com_nom ON adresse (com_nom);
 
 \i /home/aurora/Bureau/projetBDD/create_trigger.sql;
 \i /home/aurora/Bureau/projetBDD/insert_data.sql;

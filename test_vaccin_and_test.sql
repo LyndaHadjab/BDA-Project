@@ -1,44 +1,43 @@
 /* Pour tester la table vaccin */
 /*selectionner les type de vaccin existant */
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /* Inserer un nouveau type de vaccin*/
 SELECT  vaccin_insert('newVaccin');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /*Inserer un vaccin déjà existant*/
 SELECT  vaccin_insert('Pfizer');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /*Modifier ule nom d'un vaccin */
 SELECT  vaccin_update('Moderna', 'testedit');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /* Essaye de modifier un vaccin inexistant*/
 SELECT  vaccin_update('inexistant', 'testedit');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /*Essayer de modifier un nom de vaccin par un nom déjà existant*/
 SELECT  vaccin_update('AstraZeneca', 'Pfizer');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
-
+SELECT  * FROM vaccin;
 
 /* Supprimer un vaccin qui  n'est pas encore réferent (Cascade)*/
 SELECT  vaccin_delete('newVaccin');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /*Supprimer un vaccin inexistant*/
 SELECT  vaccin_delete('inexistant');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /*Supprimer un vaccin réferent par un tuple (Cascade)*/
 SELECT  vaccin_delete('Pfizer');
-SELECT  * FROM vaccin ORDER BY type_de_vaccin ASC;
+SELECT  * FROM vaccin;
 
 /*A une date donné et un vaccin et un département le nombre de dos1 et dos2 effectuer */
 
 CREATE OR REPLACE FUNCTION select_ntotdos1_ntotdos2 (_dep TEXT, _jour DATE, type_vaccin VARCHAR)
-                    RETURNS TABLE(n INTEGER, m INTEGER) AS 
+                    RETURNS TABLE(dos1 INTEGER, dos2 INTEGER) AS 
 $$
 BEGIN
     RETURN QUERY SELECT n_tot_dos1 , n_tot_dos2 FROM vaccination 
@@ -48,7 +47,7 @@ END;
 $$LANGUAGE PLPGSQL;
 
 CREATE OR REPLACE FUNCTION select_ntotdos1_ntotdos2_between (_dep TEXT, _jour1 DATE, _jour2 DATE, type_vaccin VARCHAR)
-                    RETURNS TABLE(n INTEGER, m INTEGER) AS 
+                    RETURNS TABLE(dos1 INTEGER, dos2 INTEGER) AS 
 $$
 BEGIN
     RETURN QUERY SELECT n_tot_dos1 , n_tot_dos2 FROM vaccination 
@@ -58,17 +57,17 @@ END;
 $$LANGUAGE PLPGSQL;
 
 /* test the function */
-SELECT select_ntotdos1_ntotdos2('1','2021-04-05', 'AstraZeneca');
+SELECT * FROM select_ntotdos1_ntotdos2('1','2021-04-05', 'AstraZeneca');
 SELECT vaccination_insert('1','AstraZeneca','2021-04-10',12,23);
-SELECT select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
+SELECT * FROM select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
 select vaccination_update_dos1('1','AstraZeneca','2021-04-10',120);
 select vaccination_update_dos2('1','AstraZeneca','2021-04-10',230);
-SELECT select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
+SELECT * FROM select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
 select vaccination_delete('1','AstraZeneca','2021-04-10');
-SELECT select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
+SELECT * FROM select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
 SELECT vaccin_insert('Pfizer');
 
-
+/*-------------------------------------------------------*/
 /* le stockage d'un vaccin à une date donné et à une date donné */
 
 CREATE OR REPLACE FUNCTION test_vaccin_with_stockage_vaccin(_dep VARCHAR, _jour DATE, type_vaccin VARCHAR) 
