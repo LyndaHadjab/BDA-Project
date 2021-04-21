@@ -230,7 +230,7 @@ CREATE TABLE rendez_vous_par_departement_trigger(
 );
 
 CREATE INDEX vaccin_type_de_vaccin ON vaccin (type_de_vaccin);
-CREATE INDEX departement_nom_departement ON departement (nom_departement);
+CREATE INDEX departement_code_nom_region ON departement (code_region,nom_region);
 CREATE INDEX stockage_vaccin_date_stockage ON stockage_vaccin (date_stockage);
 CREATE INDEX site_prelevement_pour_les_tests_adresse ON site_prelevement_pour_les_tests (adresse);
 CREATE INDEX site_prelevement_pour_les_tests_rs ON site_prelevement_pour_les_tests (rs);

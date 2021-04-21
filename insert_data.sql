@@ -1,8 +1,16 @@
-COPY adresse_trigger FROM '/home/aurora/Bureau/projetBDD/centres-vaccination.csv' DELIMITER ';' CSV HEADER;
+\set path '/home/aurora/Bureau/projetBDD/'
+\set file 'centres-vaccination.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
+
+COPY adresse_trigger FROM :quoted_myvariable DELIMITER ';' CSV HEADER;
 
 /* Insert INTO departement Table */
+\set file 'departements-france.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
 
-COPY departement FROM '/home/aurora/Bureau/projetBDD/departements-france.csv' DELIMITER ',' CSV HEADER;
+COPY departement FROM :quoted_myvariable DELIMITER ',' CSV HEADER;
 
 /* ADD SOME DEPARTMENT TO THE TABLE departement  */
 INSERT Into departement(code_departement, nom_departement, code_region, nom_region) VALUES (975, 'Saint-Pierre-et-Miquelon', '05', 'Saint-Pierre-et-Miquelon');
@@ -10,24 +18,46 @@ INSERT Into departement(code_departement, nom_departement, code_region, nom_regi
 INSERT Into departement(code_departement, nom_departement, code_region, nom_region) VALUES (978, 'Saint-Martin', '08', 'Saint-Martin');
 
 /*  INSERT INTO test table */
+\set file 'test-dep-2021-04-04-19h52.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
 
-COPY test(id_departement, jour,pop, t) FROM '/home/aurora/Bureau/projetBDD/test-dep-2021-04-04-19h52.csv' DELIMITER ';' CSV HEADER;
+COPY test(id_departement, jour,pop, t) FROM :quoted_myvariable DELIMITER ';' CSV HEADER;
 
 /* Insert Into vaccin Stockage_vaccin stockage_vaccin_departement Table */
 
 INSERT INTO vaccin (id_vaccin, type_de_vaccin) VALUES (0, 'Tous vaccins');
 
-COPY stocks_doses_vaccin_trigger(code_departement, departement,type_de_vaccin, nb_doses, nb_ucd,_date) FROM '/home/aurora/Bureau/projetBDD/stocks-es-par-dep.csv' DELIMITER ',' CSV HEADER;
+\set file 'stocks-es-par-dep.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
+
+COPY stocks_doses_vaccin_trigger(code_departement, departement,type_de_vaccin, nb_doses, nb_ucd,_date) FROM :quoted_myvariable DELIMITER ',' CSV HEADER;
 
 /* Insert into Site_Prelevement_pour_les_tests table */
-COPY site_prelevement_pour_les_tests FROM '/home/aurora/Bureau/projetBDD/sites-prelevements-grand-public.csv' DELIMITER ',' CSV HEADER;
+\set file 'sites-prelevements-grand-public.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
 
-COPY vaccination FROM '/home/aurora/Bureau/projetBDD/vacsi-tot-v-dep-2021-04-06-19h16.csv' DELIMITER ';' CSV HEADER;
+COPY site_prelevement_pour_les_tests FROM  :quoted_myvariable DELIMITER ',' CSV HEADER;
 
+\set file 'vacsi-tot-v-dep-2021-04-06-19h16.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
 
-COPY donnees_hospitaliere(dep, sexe, jour, hosp, rea, HospConv, SSR_USLD, autres, rad, dc) FROM '/home/aurora/Bureau/projetBDD/donnees-hospitalieres-covid19-2021-04-06-19h06.csv' DELIMITER ';'  CSV HEADER;
+COPY vaccination FROM :quoted_myvariable DELIMITER ';' CSV HEADER;
 
-COPY rendez_vous_par_departement_trigger  FROM '/home/aurora/Bureau/projetBDD/2021-04-01-prise-rdv-par-dep.csv' DELIMITER ','  CSV HEADER;
+\set file 'donnees-hospitalieres-covid19-2021-04-06-19h06.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
+
+COPY donnees_hospitaliere(dep, sexe, jour, hosp, rea, HospConv, SSR_USLD, autres, rad, dc) FROM :quoted_myvariable DELIMITER ';'  CSV HEADER;
+
+\set file '2021-04-01-prise-rdv-par-dep.csv'
+\set pf :path:file 
+\set quoted_myvariable '\'' :pf '\''
+
+COPY rendez_vous_par_departement_trigger  FROM :quoted_myvariable DELIMITER ','  CSV HEADER;
 
 /* Fonctions qui permettent d'inserer , de supprimer de modifier un tuple ds/de la base de donnée*/
 
@@ -175,8 +205,9 @@ $$
 DECLARE id INTEGER;
 BEGIN
     SELECT id_adresse INTO id FROM adresse WHERE adr_num = adrnum AND adr_voie = adrvoie AND com_cp = comcp AND com_insee = cominsee AND  com_nom = comnom ;
-    IF (NOT FOUND) THEN INSERT INTO adresse VALUES (adrnum, adrvoie, comcp, cominsee, comnom);
-        ELSE RAISE 'l''adresse  existe  deja dans la base';
+    IF (NOT FOUND) THEN 
+        INSERT INTO adresse(adr_num, adr_voie, com_cp, com_insee, com_nom) VALUES (adrnum, adrvoie, comcp, cominsee, comnom);
+    ELSE RAISE 'l''adresse  existe  deja dans la base';
     END IF;
 END;
 $$  LANGUAGE PLPGSQL;
