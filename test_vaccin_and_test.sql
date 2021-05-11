@@ -10,7 +10,7 @@ SELECT  * FROM vaccin;
 SELECT  vaccin_insert('Pfizer');
 SELECT  * FROM vaccin;
 
-/*Modifier ule nom d'un vaccin */
+/*Modifier le nom d'un vaccin */
 SELECT  vaccin_update('Moderna', 'testedit');
 SELECT  * FROM vaccin;
 
@@ -34,7 +34,7 @@ SELECT  * FROM vaccin;
 SELECT  vaccin_delete('Pfizer');
 SELECT  * FROM vaccin;
 
-/*A une date donné et un vaccin et un département le nombre de dos1 et dos2 effectuer */
+/*retourner le nombre de dos1 et dos2 effectuer dans un département à une date donné avec un vaccin*/
 
 CREATE OR REPLACE FUNCTION select_ntotdos1_ntotdos2 (_dep TEXT, _jour DATE, type_vaccin VARCHAR)
                     RETURNS TABLE(dos1 INTEGER, dos2 INTEGER) AS 

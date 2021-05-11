@@ -50,15 +50,10 @@ BEGIN
 	
 		END IF;
 
-		INSERT INTO lieu_de_vaccination (gid, nom, arrete_pref_numero, xy_precis, id_adr, id_adresse, lat_coor1, long_coor1,
-			structure_siren, structure_type, structure_rais, id_structure_adresse, _edit_datemaj, lieu_accessibilite,
-			rdv_lundi,rdv_mardi, rdv_mercredi, rdv_jeudi, rdv_vendredi, rdv_samedi, rdv_dimanche, rdv, date_fermeture,
-			date_ouverture, rdv_site_web, rdv_tel, rdv_tel2, rdv_modalites, rdv_consultation_prevaccination, centre_svi_repondeur, 
-			centre_fermeture, reserve_professionels_sante) VALUES (New.gid, New.nom, New.arrete_pref_numero, New.xy_precis, New.id_adr, id_adr, New.lat_coor1, New.long_coor1,
-			New.structure_siren, New.structure_type, New.structure_rais, id_structure_adresse, New._edit_datemaj, New.lieu_accessibilite,
+		INSERT INTO lieu_de_vaccination VALUES (New.gid, New.nom,New.id_adr, id_adr, New.lat_coor1, New.long_coor1,
+			New.structure_siren, New.structure_type, New.structure_rais, id_structure_adresse, New.lieu_accessibilite,
 			New.rdv_lundi,New.rdv_mardi, New.rdv_mercredi, New.rdv_jeudi, New.rdv_vendredi, New.rdv_samedi, New.rdv_dimanche, New.rdv, New.date_fermeture,
-			New.date_ouverture, New.rdv_site_web, New.rdv_tel, New.rdv_tel2, New.rdv_modalites, New.rdv_consultation_prevaccination, New.centre_svi_repondeur, 
-			New.centre_fermeture, New.reserve_professionels_sante);
+			New.date_ouverture, New.rdv_tel, New.rdv_consultation_prevaccination);
 
 	END IF;
 

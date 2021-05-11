@@ -1,4 +1,4 @@
-\set path '/home/aurora/Bureau/projetBDD/'
+\set path '/home/hanane/Documents/BDA-Project/DonneesCsv/'
 \set file 'centres-vaccination.csv'
 \set pf :path:file 
 \set quoted_myvariable '\'' :pf '\''
@@ -557,3 +557,48 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE PLPGSQL;
+
+/* Table lieu de vaccination*/
+/* Insert */
+CREATE OR REPLACE FUNCTION insert_lieu_de_vaccination(
+        _gid TEXT, _nom TEXT, _id_adr TEXT,
+        _id_adresse INTEGER, _lat_coor1 TEXT, _long_coor1 TEXT,
+        _structure_siren TEXT, _structure_type TEXT, _structure_rais TEXT, 
+        _id_structure_adresse INTEGER, _lieu_accessibilite TEXT,_rdv_lundi TEXT,
+        _rdv_mardi TEXT, _rdv_mercredi TEXT, _rdv_jeudi TEXT, 
+        _rdv_vendredi TEXT, _rdv_samedi TEXT, _rdv_dimanche TEXT, 
+        _rdv TEXT, _date_fermeture DATE, _date_ouverture DATE, 
+        _rdv_tel TEXT, _rdv_consultation_prevaccination Boolean) RETURNS void as 
+$$
+DECLARE ligne_1 RECORD;
+DECLARE ligne_2 RECORD;
+BEGIN
+
+   SELECT *  INTO ligne_1 FROM lieu_de_vaccination  WHERE gid = _gid;
+
+   IF (FOUND) THEN RAISE 'Le gid % existe déjà dans la base de donnée ', _gid ;
+   END IF;
+   
+   SELECT * INTO ligne_2 FROM adresse WHERE id_adresse = _id_adresse;
+
+   IF (NOT FOUND) THEN RAISE 'l''adresse  % n''existe pas dans la base de donnée ', _id_adresse ;
+   END IF;
+
+   SELECT * INTO ligne_2 FROM adresse WHERE id_adresse = _id_structure_adresse;
+
+   IF (NOT FOUND) THEN RAISE 'l''adresse  % n''existe pas dans la base de donnée ', _id_structure_adresse ;
+   END IF;
+
+   INSERT INTO lieu_de_vaccination VALUES (
+            _gid, _nom, _id_adr, 
+            _id_adresse, _lat_coor1, _long_coor1,
+			_structure_siren,_structure_type, _structure_rais, 
+            _id_structure_adresse, _lieu_accessibilite, _rdv_lundi,
+            _rdv_mardi, _rdv_mercredi, _rdv_jeudi, 
+            _rdv_vendredi, _rdv_samedi, _rdv_dimanche, 
+            _rdv, _date_fermeture, _date_ouverture, 
+            _rdv_tel, _rdv_consultation_prevaccination
+            );
+END;
+$$ LANGUAGE PLPGSQL;
+

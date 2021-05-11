@@ -95,8 +95,6 @@ CREATE TABLE adresse(
 CREATE TABLE lieu_de_vaccination(
 	gid 				VARCHAR PRIMARY KEY,
 	nom 				VARCHAR ,
-	arrete_pref_numero 	VARCHAR,
-	xy_precis 			VARCHAR,
 	id_adr 				VARCHAR ,
 	id_adresse 			INTEGER ,
 	lat_coor1 			VARCHAR ,
@@ -105,9 +103,6 @@ CREATE TABLE lieu_de_vaccination(
 	structure_type 		VARCHAR ,
 	structure_rais 		VARCHAR ,
 	id_structure_adresse INTEGER ,
-	_userid_creation     INTEGER,
-	_userid_modification INTEGER,
-	_edit_datemaj 		Date,
 	lieu_accessibilite 	VARCHAR,
 	rdv_lundi 			VARCHAR,
 	rdv_mardi 			VARCHAR,
@@ -119,14 +114,8 @@ CREATE TABLE lieu_de_vaccination(
 	rdv 				VARCHAR,
 	date_fermeture 		DATE,
 	date_ouverture 		DATE,
-	rdv_site_web 		VARCHAR,
 	rdv_tel  			VARCHAR,
-	rdv_tel2 			VARCHAR,
-	rdv_modalites 		VARCHAR,
 	rdv_consultation_prevaccination Boolean,
-	centre_svi_repondeur Boolean,
-	centre_fermeture 	Boolean, 
-	reserve_professionels_sante Boolean,
 
 	CONSTRAINT fk_id_adresse FOREIGN KEY (id_adresse) 
 			REFERENCES adresse(id_adresse) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -237,5 +226,5 @@ CREATE INDEX site_prelevement_pour_les_tests_rs ON site_prelevement_pour_les_tes
 CREATE INDEX adresse_adr_voie ON adresse (adr_voie);
 CREATE INDEX adresse_com_nom ON adresse (com_nom);
 
-\i /home/aurora/Bureau/projetBDD/create_trigger.sql;
-\i /home/aurora/Bureau/projetBDD/insert_data.sql;
+\i /home/hanane/Documents/BDA-Project/create_trigger.sql;
+\i /home/hanane/Documents/BDA-Project/insert_data.sql;
