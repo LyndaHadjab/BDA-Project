@@ -42,7 +42,7 @@ BEGIN
                 WHERE D.dep = code_departement  AND D.jour = jourDonne AND D.sexe = sexeDonne ;
 
     IF NOT FOUND THEN
-        RAISE NOTICE 'aucune données hospitaliere pour ce département % a ce jour la % et avec ce sexe %', code_departement, jour, sexeDonne;
+        RAISE NOTICE 'aucune données hospitaliere pour ce département % a ce jour la % et avec ce sexe %', code_departement, jourDonne, sexeDonne;
     END IF;
     RETURN;
 END;
@@ -69,6 +69,9 @@ SELECT dep, hosp, rea, HospConv, SSR_USLD, rad, dc FROM select_donnees_hospi_dep
 
 /* Function insert Donnee */
 
-SELECT insert_donnee_hospitaliere ('1', '1', '2020-04-12',12, 34, 'NB', 'NB',40, 56 );
+SELECT insert_donnee_hospitaliere ('1', 1, '2020-04-12',12, 34, 'NB', 'NB',40, 56);
 
-SELECT insert_donnee_hospitaliere ('1', '1', '2021-04-12',12, 34, 'NB', 'NB',40, 56 );
+SELECT insert_donnee_hospitaliere ('1', 1, '2021-04-12',12, 34, 'NB', 'NB',40, 56);
+
+/* Verifier les contraintes imposé sur la table */
+INSERT INTO donnees_hospitaliere VALUES ('1', 1, '2029-04-12',12, 34, 'NB', 'NB',-40, -56 )

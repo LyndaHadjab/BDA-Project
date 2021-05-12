@@ -1,5 +1,8 @@
 /* Sur la table Vaccination */
-
+/* verifier les contraintes => check */
+/* si on essaye d'insert une vaccination avec nombre de dose inférieure à zéro */
+INSERT INTO vaccination VALUES ('1',1,'2020-01-01',-12,60);
+INSERT INTO vaccination VALUES ('1',0,'2020-01-11',12,-60);
 /* La selection par dep, jour / jour / dep sans fonctions */
 
 /* La fonction  par dep, vaccin  */
