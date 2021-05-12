@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS stocks_doses_vaccin_trigger CASCADE;
 
 CREATE TABLE vaccin(
 	id_vaccin      SERIAL PRIMARY kEY,
-	type_de_vaccin VARCHAR NOT NULL UNIQUE 
+	type_de_vaccin VARCHAR NOT NULL
 );
 
 CREATE TABLE departement(
@@ -226,5 +226,5 @@ CREATE INDEX site_prelevement_pour_les_tests_rs ON site_prelevement_pour_les_tes
 CREATE INDEX adresse_adr_voie ON adresse (adr_voie);
 CREATE INDEX adresse_com_nom ON adresse (com_nom);
 
-\i /home/hanane/Documents/BDA-Project/create_trigger.sql;
-\i /home/hanane/Documents/BDA-Project/insert_data.sql;
+\i /home/aurora/Bureau/projetBDD/create_trigger.sql;
+\i /home/aurora/Bureau/projetBDD/insert_data.sql;

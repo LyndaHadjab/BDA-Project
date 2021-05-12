@@ -16,7 +16,16 @@ CREATE TRIGGER departement_audit
 CREATE OR REPLACE FUNCTION test_trigger_edit_code() RETURNS TRIGGER AS
 $$
 BEGIN
+	IF (NEW.pop < 0 OR NEW.t < 0)
+		THEN RAISE 'Les valeurs de pop et t doivent etre > à zéro';
+	END IF;
+
 	New.id_departement = LTRIM(New.id_departement, '0');
+
+	PERFORM * FROM departement WHERE code_departement = NEW.id_departement;
+	IF (NOT FOUND) THEN RAISE 'Le départment est incorrect %',New.id_departement;
+	END IF;
+
 	RETURN NEW;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -166,3 +175,19 @@ CREATE TRIGGER rendez_vous_par_departement_audit
 	BEFORE INSERT OR UPDATE
 	ON rendez_vous_par_departement_trigger
 	FOR EACH ROW EXECUTE PROCEDURE rendez_vous_par_departement_import_csv();
+
+CREATE OR REPLACE FUNCTION vaccin_trigger_audit() RETURNS TRIGGER AS
+$$
+BEGIN
+	PERFORM * FROM vaccin WHERE type_de_vaccin = New.type_de_vaccin;
+	IF (FOUND) THEN RAISE 'ce type de vaccin % existe déjà dans la table',New.type_de_vaccin;
+	END IF;
+
+	RETURN NEW;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER vaccin_trigger
+	BEFORE INSERT OR UPDATE
+	ON vaccin
+	FOR EACH ROW EXECUTE PROCEDURE vaccin_trigger_audit();

@@ -52,6 +52,3 @@ SELECT adresse_insert('1', 'Rue Joseph Cugnot test rue', '54000', '54395', 'Nanc
 SELECT adresse_delete('1', 'Rue Joseph Cugnot test rue', '54000', '54395', 'Nancy');
 SELECT * FROM adresse WHERE adr_num = '1' AND adr_voie = 'Rue Joseph Cugnot test rue' 
 						AND com_cp = '54000' AND  com_insee = '54395' AND com_nom = 'Nancy';
-
-
-/*Nombre de rendez vous prise pour */

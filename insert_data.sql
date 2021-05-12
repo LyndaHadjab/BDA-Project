@@ -1,4 +1,4 @@
-\set path '/home/hanane/Documents/BDA-Project/DonneesCsv/'
+\set path '/home/aurora/Bureau/projetBDD/DonneesCsv/'
 \set file 'centres-vaccination.csv'
 \set pf :path:file 
 \set quoted_myvariable '\'' :pf '\''

@@ -112,3 +112,19 @@ SELECT * from test WHERE id_departement = '1' AND jour = '2021-04-10';
 
 /*Si on essaye de soustraire un nombre négative une exception est généré*/
 SELECT test_sub_t_number('1','2021-04-10',-2);
+
+/* si on essaye d'inserer une pop négative , le trigger correspondant est déclanché */
+INSERT INTO test VALUES ('176865445','2020-05-13',-1,40);
+
+/* si on essaye d'inserer un département inexistant , le trigger correspondant est déclanché */
+INSERT INTO test VALUES ('176865445','2020-05-13',1,40);
+
+/* Si on essaye d'inserer un vaccin déjà existant , le trigger se déclanche et raise */
+INSERT INTO vaccin(type_de_vaccin) values('Pfizer');
+/* sinon */
+INSERT INTO vaccin(type_de_vaccin) values('test');
+
+/* Si on essaye de modifierun vaccin (type) par un type déjà existant , le trigger se déclanche et raise */
+UPDATE vaccin set type_de_vaccin = 'Pfizer' where type_de_vaccin='test';
+/* Sinon */
+update vaccin set type_de_vaccin = 'Pfizer' where type_de_vaccin='test edit';
