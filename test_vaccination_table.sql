@@ -62,3 +62,37 @@ $$ LANGUAGE PLPGSQL;
 
 select * from select_vaccination_dep_vaccin_jour('1', 'Pfizer', '2021-04-05');
 select * from select_vaccination_dep_vaccin_jour('1', 'Moderna', '2021-04-05');
+
+/* le nombre de vaccination dans un département à une date donné*/
+SELECT COUNT(*) as nombre_vaccin FROM vaccination WHERE dep = '1' and jour = '2021-04-05';
+
+/* le nombre de vaccination dans un département à une date donné pour un vaccin spécifique*/
+CREATE OR REPLACE FUNCTION select_nombre_vaccination_dep_date(_dep varchar, _jour date, _vaccin text) 
+    RETURNS INTEGER as 
+$$
+DECLARE id INTEGER;
+DECLARE res INTEGER;
+BEGIN 
+
+    PERFORM * FROM departement WHERE code_departement = _dep;
+    IF (NOT FOUND) THEN RAISE 'le département % n''existe pas',_dep;
+    END IF;
+
+    SELECT id_vaccin INTO id FROM vaccin WHERE type_de_vaccin = _vaccin;
+    IF (NOT FOUND) THEN RAISE 'le vaccin  % n''existe pas',_vaccin;
+    END IF;
+
+    SELECT count(*) INTO res FROM vaccination WHERE dep = _dep and jour = _jour and vaccin = id;
+    return res;
+
+END;
+$$ LANGUAGE PLPGSQL;
+
+SELECT select_nombre_vaccination_dep_date ('1', '2021-04-05', 'Pfizer') as nombre_de_vaccin_dep_date;
+
+/*pour chaque departement la somme de dose 1 et dose 2 donnée*/
+
+SELECT dep, sum(n_tot_dos1) as total_dep_dos1, sum(n_tot_dos2) as total_dep_dos2
+FROM vaccination
+GROUP BY dep
+ORDER BY dep;

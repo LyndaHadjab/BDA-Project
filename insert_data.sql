@@ -33,6 +33,7 @@ INSERT INTO vaccin (id_vaccin, type_de_vaccin) VALUES (0, 'Tous vaccins');
 \set quoted_myvariable '\'' :pf '\''
 
 COPY stocks_doses_vaccin_trigger(code_departement, departement,type_de_vaccin, nb_doses, nb_ucd,_date) FROM :quoted_myvariable DELIMITER ',' CSV HEADER;
+INSERT INTO vaccin (id_vaccin, type_de_vaccin) VALUES (4, 'Janssen');
 
 /* Insert into Site_Prelevement_pour_les_tests table */
 \set file 'sites-prelevements-grand-public.csv'
@@ -41,7 +42,7 @@ COPY stocks_doses_vaccin_trigger(code_departement, departement,type_de_vaccin, n
 
 COPY site_prelevement_pour_les_tests FROM  :quoted_myvariable DELIMITER ',' CSV HEADER;
 
-\set file 'vacsi-tot-v-dep-2021-04-06-19h16.csv'
+\set file 'vacsi-tot-v-dep-2021-05-13-19h09.csv'
 \set pf :path:file 
 \set quoted_myvariable '\'' :pf '\''
 
