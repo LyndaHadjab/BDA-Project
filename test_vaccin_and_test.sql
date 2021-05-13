@@ -128,3 +128,15 @@ INSERT INTO vaccin(type_de_vaccin) values('test');
 UPDATE vaccin set type_de_vaccin = 'Pfizer' where type_de_vaccin='test';
 /* Sinon */
 update vaccin set type_de_vaccin = 'Pfizer' where type_de_vaccin='test edit';
+
+/* On utilisant  PREPARE */
+/*sur la table vaccin*/
+PREPARE insert_into_vaccin (text) AS
+    INSERT INTO vaccin(type_de_vaccin) VALUES ($1);
+EXECUTE insert_into_vaccin ('test prepare');
+
+/*sur la table test*/
+PREPARE insert_into_test(text, date, int, int) AS
+    INSERT INTO test VALUES ($1, $2, $3, $4);
+EXECUTE insert_into_test('1','2020-07-13',19,40);
+

@@ -52,3 +52,14 @@ SELECT adresse_insert('1', 'Rue Joseph Cugnot test rue', '54000', '54395', 'Nanc
 SELECT adresse_delete('1', 'Rue Joseph Cugnot test rue', '54000', '54395', 'Nancy');
 SELECT * FROM adresse WHERE adr_num = '1' AND adr_voie = 'Rue Joseph Cugnot test rue' 
 						AND com_cp = '54000' AND  com_insee = '54395' AND com_nom = 'Nancy';
+
+/* Exemple avec pepare*/
+/*sur la table departement*/
+PREPARE insert_into_departement (text, text, text, text) AS
+    INSERT INTO departement VALUES ($1, $2, $3, $4);
+EXECUTE insert_into_departement('999', 'test depa', '76', 'testRegion2');
+
+/* si on essaye d'insérer un département existant*/
+PREPARE insert_into_departement (text, text, text, text) AS
+    INSERT INTO departement VALUES ($1, $2, $3, $4);
+EXECUTE insert_into_departement('999', 'test depa', '76', 'testRegion2');
