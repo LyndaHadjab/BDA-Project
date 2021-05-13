@@ -509,6 +509,10 @@ BEGIN
         THEN RAISE 'erreur le nombre de rendez vous doit etre supérieure ou égale à zéro';
     END IF;
 
+     IF (rangvaccinal < 0) 
+        THEN RAISE 'erreur le rang vaccinal doit etre supérieure ou égale à zéro';
+    END IF;
+
     select * INTO ligne FROM rendez_vous_par_departement WHERE id_departement = dep AND rang_vaccinal = rangvaccinal
             AND date_debut_semaine = datedebutsemaine;
 

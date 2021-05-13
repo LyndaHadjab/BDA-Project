@@ -74,4 +74,7 @@ SELECT insert_donnee_hospitaliere ('1', 1, '2020-04-12',12, 34, 'NB', 'NB',40, 5
 SELECT insert_donnee_hospitaliere ('1', 1, '2021-04-12',12, 34, 'NB', 'NB',40, 56);
 
 /* Verifier les contraintes imposé sur la table */
-INSERT INTO donnees_hospitaliere VALUES ('1', 1, '2029-04-12',12, 34, 'NB', 'NB',-40, -56 )
+INSERT INTO donnees_hospitaliere VALUES ('1', 1, '2029-04-12',12, 34, 'NB', 'NB',-40, -56 );
+
+/* tester le trigger concerné */
+INSERT INTO donnees_hospitaliere VALUES ('1', 4, '2029-04-12',12, 34, 'NB', 'NB',40, 56 );

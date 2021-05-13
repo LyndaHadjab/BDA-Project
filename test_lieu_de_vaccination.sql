@@ -49,4 +49,14 @@ select adr_num, adr_voie, com_cp, com_insee, com_nom
         where  lieu_de_vaccination.id_adresse = adresse.id_adresse 
         and lieu_de_vaccination.nom = 'Nancy - Tour Marcel Brot' ;
 
+/* si on essaye d'insérer un lieu de vaccination avec un gid existant 
+déjà le trigger se déclanche avec une exception */
 
+INSERT INTO lieu_de_vaccination VALUES ('8990','Nancy','54395_2880_00001',
+                                1,'48.6779','6.20247',
+                                '130007834','8412Z','AGENCE',
+                                2,'test','9:00-17:00 ',
+                                '9:00-17:00' ,'9:00-17:00','9:00-17:00' ,
+                                '9:00-17:00' ,'non précisé ','non précisé' ,
+                                't' , '2021-01-04','2021-01-04', 
+                                '+33383851300', false);

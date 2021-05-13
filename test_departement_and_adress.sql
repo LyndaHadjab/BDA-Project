@@ -63,3 +63,8 @@ EXECUTE insert_into_departement('999', 'test depa', '76', 'testRegion2');
 PREPARE insert_into_departement (text, text, text, text) AS
     INSERT INTO departement VALUES ($1, $2, $3, $4);
 EXECUTE insert_into_departement('999', 'test depa', '76', 'testRegion2');
+
+/* Si on insère un département déja existant le trigger se déclanche */
+INSERT INTO departement VALUES ('999', 'test depa', '76', 'testRegion2');
+/* Sinon*/
+INSERT INTO departement VALUES ('9997', 'test no equal', '76', 'testRegion2');

@@ -85,3 +85,14 @@ select * from  select_stockage_vaccin_dep_jour_vaccin('1', '2021-01-23', 'Pfizer
 select * from select_stockage_vaccin_jour_dep('2021-01-22', '1');
 select * from select_stockage_vaccin_jour_dep('2021-01-22');
 select * from select_stockage_vaccin_vaccin_dep('1', 'Pfizer');
+
+/* Insert , check trigger */
+INSERT INTO stockage_vaccin(date_stockage) VALUES ('2021-01-22');
+
+/* avec prepare */
+PREPARE insert_into_stockage_vaccin(date) AS
+    INSERT INTO stockage_vaccin(date_stockage) VALUES ($1);
+EXECUTE insert_into_stockage_vaccin('2025-01-22');
+
+/* avec une date existante déjà */
+EXECUTE insert_into_stockage_vaccin('2025-01-22');
