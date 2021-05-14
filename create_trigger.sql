@@ -98,7 +98,8 @@ BEGIN
 	/* INSERT INTO stockage_vaccin_Departement */
 
 	/*raise notice 'Value found: % ', NEW.code_departement ;*/
-	INSERT INTO stockage_vaccin_Departement VALUES (NEW.code_departement, ligne_1, ligne, New.nb_doses, NEW.nb_ucd);
+	New.code_departement = LTRIM(New.code_departement, '0');
+	INSERT INTO stockage_vaccin_departement VALUES (NEW.code_departement, ligne_1, ligne, New.nb_doses, NEW.nb_ucd);
 
 	RETURN NULL;
 END;
@@ -224,7 +225,7 @@ CREATE TRIGGER lieu_de_vaccination_trigger
 	FOR EACH ROW 
 	EXECUTE PROCEDURE lieu_de_vaccination_audit();
 
-CREATE OR REPLACE FUNCTION  stockage_vaccin_audit() RETURNS TRIGGER AS 
+CREATE OR REPLACE FUNCTION stockage_vaccin_audit() RETURNS TRIGGER AS 
 $$
 BEGIN
 	PERFORM * FROM stockage_vaccin WHERE date_stockage = NEW.date_stockage;
@@ -270,3 +271,42 @@ CREATE TRIGGER rendez_vous_par_departement_trigger_edit
 	ON rendez_vous_par_departement
 	FOR EACH ROW 
 	EXECUTE PROCEDURE rendez_vous_par_departement_trigger_function();
+
+CREATE OR REPLACE FUNCTION adresse_trigger_function() RETURNS TRIGGER AS 
+$$
+BEGIN
+	PERFORM * FROM adresse WHERE adr_num = NEW.adr_num AND adr_voie = NEW.adr_voie
+		 AND com_cp = NEW.com_cp AND com_insee = NEW.com_insee AND com_nom = NEW.com_nom;
+    IF (NOT FOUND) THEN
+		RETURN NEW;
+    ELSE RETURN NULL;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER adresse_trigger_edit
+	BEFORE INSERT OR UPDATE
+	ON adresse
+	FOR EACH ROW
+	EXECUTE PROCEDURE adresse_trigger_function();
+
+CREATE OR REPLACE FUNCTION stockage_vaccin_departement_function() RETURNS TRIGGER AS 
+$$
+BEGIN
+	IF (NEW.nb_doses < 0 OR NEW.nb_ucd < 0) THEN
+		RAISE 'trigger : le nombre de doses % le nombre de ucd % doit etre supérieure à zéro', NEW.nb_doses,NEW.nb_ucd;
+	END IF;
+
+	PERFORM * FROM departement WHERE code_departement = New.code_departement;
+    IF (FOUND) THEN
+		RETURN NEW;
+    ELSE RETURN NULL;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE TRIGGER stockage_vaccin_departement_trigger
+	BEFORE INSERT OR UPDATE
+	ON stockage_vaccin_departement
+	FOR EACH ROW
+	EXECUTE PROCEDURE stockage_vaccin_departement_function();

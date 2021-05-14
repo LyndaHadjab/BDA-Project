@@ -533,11 +533,13 @@ $$ LANGUAGE PLPGSQL;
 
 /* La Table stockage_vaccin_par_departement */
 /* 1: Insertion */
+
 CREATE OR REPLACE FUNCTION insert_stockage_vaccination_departement(dep varchar, jour Date, type_vaccin varchar,
                 nb_dosesV INTEGER, nb_ucdV INTEGER) RETURNS void as 
 $$
 DECLARE id_stockage INTEGER;
 DECLARE vaccin_id INTEGER;
+DECLARE _jour INTEGER;
 BEGIN
     /* si le type de vaccin n'existe pas alors c est pas possible d'inserer */
     PERFORM type_de_vaccin FROM vaccin WHERE type_de_vaccin = type_vaccin ;
@@ -556,11 +558,39 @@ BEGIN
             INSERT INTO stockage_vaccin_departement VALUES (dep, id_stockage, vaccin_id, nb_dosesV, nb_ucdV);
         ELSE
             Select id_vaccin into vaccin_id from vaccin WHERE type_de_vaccin = type_vaccin; 
+            Select id_stockage_vaccin into _jour from stockage_vaccin WHERE date_stockage = jour; 
 
             Update stockage_vaccin_departement set nb_doses = nb_doses + nb_dosesV , nb_ucd = nb_ucd + nb_ucdV 
-                WHERE code_departement = dep AND id_vaccin = vaccin_id AND jour = jour;
+                WHERE code_departement = dep AND id_vaccin = vaccin_id AND id_stockage_vaccin = _jour;
         END IF;
     END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+/*Modifier un département d'un stockage pour un vaccin donnée */
+CREATE OR REPLACE FUNCTION edit_dep_stockage_vaccination_departement(dep varchar, jour Date, type_vaccin varchar,
+                new_dep VARCHAR) RETURNS void as 
+$$
+DECLARE id_stockage INTEGER;
+DECLARE vaccin_id INTEGER;
+BEGIN
+    Select id_vaccin into vaccin_id from vaccin WHERE type_de_vaccin = type_vaccin; 
+
+    IF (NOT FOUND) THEN RAISE 'Le vaccin % n''existe pas dans notre base',type_vaccin;
+    END IF;
+
+    Select id_stockage_vaccin into id_stockage from stockage_vaccin WHERE date_stockage = jour;
+
+    PERFORM * FROM stockage_vaccin_departement WHERE code_departement = new_dep 
+        AND id_stockage_vaccin = id_stockage AND id_vaccin = vaccin_id;
+
+    IF (FOUND) 
+        THEN RAISE 'cette donnée existe déjà dans la table';
+    END IF;
+
+    Update stockage_vaccin_departement set code_departement = new_dep 
+        WHERE code_departement = dep AND id_vaccin = vaccin_id AND id_stockage_vaccin = id_stockage;
+
 END;
 $$ LANGUAGE PLPGSQL;
 

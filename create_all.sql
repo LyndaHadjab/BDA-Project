@@ -78,7 +78,7 @@ CREATE TABLE test (
 	t               INTEGER NOT NULL,
 
 	PRIMARY KEY (id_departement, jour),
-	
+
 	CONSTRAINT fk_id_departement FOREIGN KEY (id_departement) 
 	  REFERENCES departement(code_departement) ON UPDATE CASCADE ON DELETE CASCADE
 );

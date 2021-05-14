@@ -70,9 +70,31 @@ $$ LANGUAGE PLPGSQL;
 Select * from stockage_vaccin_departement SD where SD.code_departement = '1' LIMIT 4;
 
 /*  Test d'insertion pour la table stockage_vaccin_departement */ 
+\echo avant insertion (modification) d un stockage de vaccin;
+
+SELECT * FROM stockage_vaccin_departement WHERE code_departement = '1' 
+    and id_stockage_vaccin IN (select id_stockage_vaccin 
+    FROM stockage_vaccin WHERE date_stockage ='2021-02-12') 
+    AND id_vaccin IN (SELECT id_vaccin FROM vaccin WHERE type_de_vaccin = 'Pfizer');
 
 select insert_stockage_vaccination_departement('1', '2021-02-12', 'Pfizer', 3, 5);
+\echo la donnée est bien insérer dans la base;
+
+SELECT * FROM stockage_vaccin_departement WHERE code_departement = '1' 
+    and id_stockage_vaccin IN (select id_stockage_vaccin 
+    FROM stockage_vaccin WHERE date_stockage ='2021-02-12') 
+    AND id_vaccin IN (SELECT id_vaccin FROM vaccin WHERE type_de_vaccin = 'Pfizer');
+
 select insert_stockage_vaccination_departement('1', '2021-04-20', 'Pfizer', 3, 5);
+/* si la donnée exite  déjà dans la table avec le meme code departement et le vaccin 
+et la date de stockage*/
+select edit_dep_stockage_vaccination_departement('1', '2021-02-12', 'Pfizer', '3');
+\echo résultat après modification;
+SELECT * FROM stockage_vaccin_departement WHERE code_departement = '3' 
+    and id_stockage_vaccin IN (select id_stockage_vaccin 
+    FROM stockage_vaccin WHERE date_stockage ='2021-02-12') 
+    AND id_vaccin IN (SELECT id_vaccin FROM vaccin WHERE type_de_vaccin = 'Pfizer');
+
 
 /* Test de séléction */
 
@@ -93,3 +115,6 @@ EXECUTE insert_into_stockage_vaccin('2025-01-22');
 
 /* avec une date existante déjà */
 EXECUTE insert_into_stockage_vaccin('2025-01-22');
+
+/* vérifier si le trigger se déclanche bien on essayant d'insérer une valeur négative*/
+INSERT INTO stockage_vaccin_departement VALUES ('1', 1, 1, -3, 5);

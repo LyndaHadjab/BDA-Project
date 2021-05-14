@@ -68,3 +68,7 @@ EXECUTE insert_into_departement('999', 'test depa', '76', 'testRegion2');
 INSERT INTO departement VALUES ('999', 'test depa', '76', 'testRegion2');
 /* sinon */
 INSERT INTO departement VALUES ('9997', 'test no equal', '76', 'testRegion2');
+
+/* si on essaye d'insérer une adresse existante 
+le trigger se déclanchera avec une exception*/
+Insert INTO adresse VALUES ('1', 'Rue Joseph Cugnot test rue', '54000', '54395', 'Nancy');
