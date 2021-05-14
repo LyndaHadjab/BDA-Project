@@ -78,3 +78,32 @@ INSERT INTO donnees_hospitaliere VALUES ('1', 1, '2029-04-12',12, 34, 'NB', 'NB'
 
 /* tester le trigger concerné */
 INSERT INTO donnees_hospitaliere VALUES ('1', 4, '2029-04-12',12, 34, 'NB', 'NB',40, 56 );
+
+/* Nombre cumulé de personne décédées, hospitalisées, réanimation à l'hôpital ds un département pour un sexe donné*/
+CREATE OR REPLACE FUNCTION retourner_nombre_dc_hosp_rea(_sexe INTEGER, _dep text)
+    RETURNS table (nombre_décédées bigint, nombre_hospitalisées bigint, nombre_réanimation bigint) as
+$$
+DECLARE id INTEGER;
+BEGIN
+
+    PERFORM * FROM departement WHERE code_departement = _dep;
+    IF (NOT FOUND) THEN RAISE 'le département % n''existe pas',_dep;
+    END IF;
+
+    IF (_sexe < 0 or _sexe > 2)
+        THEN RAISE 'le sexe doit etre supérieure à zéro et inférieure ou égale à 2';
+    END IF;
+
+    return QUERY SELECT count(dc) , count(hosp),
+    count(rea) FROM donnees_hospitaliere WHERE dep = _dep and sexe = _sexe;
+END;
+$$ LANGUAGE PLPGSQL;
+
+/* cas = femme */
+SELECT * from retourner_nombre_dc_hosp_rea(0, '1');
+/* cas = homme */
+SELECT * from retourner_nombre_dc_hosp_rea(1, '1');
+
+/*Nombre cumulé de personne décédées, hospitalisées, réanimation à l'hôpital ds un département pour un sexe donné à une date donné */
+SELECT count(dc) as nombre_décédées, count(hosp) as nombre_hospitalisées,
+    count(rea) as nombre_réanimation FROM donnees_hospitaliere WHERE dep = '1' and sexe = 0 and jour = ' 2020-03-18';

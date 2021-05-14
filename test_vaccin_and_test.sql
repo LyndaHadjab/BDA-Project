@@ -139,4 +139,3 @@ EXECUTE insert_into_vaccin ('test prepare');
 PREPARE insert_into_test(text, date, int, int) AS
     INSERT INTO test VALUES ($1, $2, $3, $4);
 EXECUTE insert_into_test('1','2020-07-13',19,40);
-

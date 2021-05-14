@@ -606,4 +606,3 @@ BEGIN
             );
 END;
 $$ LANGUAGE PLPGSQL;
-

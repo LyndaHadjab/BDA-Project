@@ -47,7 +47,6 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-
 /* Fonction 3: stockage de vaccin par département, type vaccin */
 
 CREATE OR REPLACE FUNCTION select_stockage_vaccin_vaccin_dep(dep varchar, type_vac varchar) 
@@ -75,12 +74,10 @@ Select * from stockage_vaccin_departement SD where SD.code_departement = '1' LIM
 select insert_stockage_vaccination_departement('1', '2021-02-12', 'Pfizer', 3, 5);
 select insert_stockage_vaccination_departement('1', '2021-04-20', 'Pfizer', 3, 5);
 
-
 /* Test de séléction */
 
 select * from  select_stockage_vaccin_dep_jour_vaccin('1', '2021-01-22', 'Pfizer');
 select * from  select_stockage_vaccin_dep_jour_vaccin('1', '2021-01-23', 'Pfizer');
-
 
 select * from select_stockage_vaccin_jour_dep('2021-01-22', '1');
 select * from select_stockage_vaccin_jour_dep('2021-01-22');

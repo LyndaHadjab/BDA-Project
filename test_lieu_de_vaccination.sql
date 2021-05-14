@@ -22,13 +22,11 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-
 /* Test function 1: retourner les rendez vous d'un lieu de vaccination*/
 
 select * from retourner_rendez_vous_centre('Nancy - Tour Marcel Brot');
 select * from retourner_rendez_vous_centre('DOL DE BGNE-Club de l''amitié');
 select * from retourner_rendez_vous_centre('Vide');
-
 
 /*  Tester l'insertion dans la table lieu_de_vaccination*/
 SELECT insert_lieu_de_vaccination(
@@ -60,3 +58,50 @@ INSERT INTO lieu_de_vaccination VALUES ('8990','Nancy','54395_2880_00001',
                                 '9:00-17:00' ,'non précisé ','non précisé' ,
                                 't' , '2021-01-04','2021-01-04', 
                                 '+33383851300', false);
+
+/* modifier l'id d'un lieu de vaccination*/
+CREATE OR REPLACE FUNCTION lieu_de_vaccination_edit_gid(_ID VARCHAR, new_gid VARCHAR) RETURNS void as
+$$
+BEGIN
+    PERFORM * FROM lieu_de_vaccination WHERE gid = _ID ;
+    IF FOUND THEN
+        PERFORM * FROM lieu_de_vaccination WHERE gid = new_gid ;
+        IF (FOUND) 
+            THEN RAISE 'un site avec le meme id existe déjà';
+        ELSE update lieu_de_vaccination set gid = new_gid where gid = _ID;
+        END IF;
+    ELSE RAISE 'le site avec le id = % n''exite pas',_ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+/* si on essaye de modifier avec un gid déjà existant */
+SELECT lieu_de_vaccination_edit_gid ('89', '1220');
+
+/* sinon*/
+SELECT lieu_de_vaccination_edit_gid ('89', '1228880');
+
+PREPARE select_edit_lieu_de_vaccination (text) as 
+    SELECT * FROM lieu_de_vaccination WHERE gid = $1;
+EXECUTE select_edit_lieu_de_vaccination('1228880');
+
+/* supprimer un lieu de vaccination en donnant son id*/
+
+CREATE OR REPLACE FUNCTION lieu_de_vaccination_delete_gid(_ID VARCHAR) RETURNS void as
+$$
+BEGIN
+    PERFORM * FROM lieu_de_vaccination WHERE gid = _ID ;
+    IF FOUND THEN
+        delete from lieu_de_vaccination  where gid = _ID;
+    ELSE RAISE 'le site avec le id = % n''exite pas',_ID;
+    END IF;
+END;
+$$ LANGUAGE PLPGSQL;
+
+/* si on essaye de supprimer un lieu en donnat un gid inexistant*/
+SELECT lieu_de_vaccination_delete_gid ('89');
+
+/* sinon*/
+SELECT lieu_de_vaccination_delete_gid ('1228880');
+
+EXECUTE select_edit_lieu_de_vaccination('1228880');

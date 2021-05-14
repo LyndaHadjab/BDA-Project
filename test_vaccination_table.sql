@@ -34,16 +34,13 @@ select * from select_vaccination_dep_vaccin('1', 'Pfizer');
 select * from select_vaccination_dep_vaccin('1', 'Moderna');
 select * from select_vaccination_dep_vaccin('1', 'AstraZeneca');
 
-
 /* La fonction par departement vaccin jour */
 
 CREATE OR REPLACE FUNCTION select_vaccination_dep_vaccin_jour(_dep_param varchar, vaccin_type varchar, _jour_param date) 
     RETURNS table (_dep varchar, _vaccin varchar,_jour date, _n_tot_dos1 INTEGER, _n_tot_dos2 INTEGER) as 
 $$
 DECLARE id_vac INTEGER;
-
 BEGIN 
-
     select id_vaccin into id_vac from vaccin where type_de_vaccin=vaccin_type;
     if NOT FOUND THEN
         raise NOTICE 'le vaccin % existe pas ', vaccin_type; 
@@ -84,7 +81,6 @@ BEGIN
 
     SELECT count(*) INTO res FROM vaccination WHERE dep = _dep and jour = _jour and vaccin = id;
     return res;
-
 END;
 $$ LANGUAGE PLPGSQL;
 

@@ -15,12 +15,12 @@ DROP TABLE IF EXISTS stocks_doses_vaccin_trigger CASCADE;
 
 /* Remarque : DROP CASCADE pour supprimer aussi les objets dependants de cette table */
 
-CREATE TABLE vaccin(
+CREATE TABLE vaccin (
 	id_vaccin      SERIAL PRIMARY kEY,
 	type_de_vaccin VARCHAR NOT NULL
 );
 
-CREATE TABLE departement(
+CREATE TABLE departement (
 	code_departement VARCHAR PRIMARY KEY,
 	nom_departement  VARCHAR NOT NULL UNIQUE,
 	code_region      VARCHAR NOT NULL,
@@ -42,12 +42,12 @@ CREATE TABLE vaccination (
 		REFERENCES vaccin (id_vaccin) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE stockage_vaccin(
+CREATE TABLE stockage_vaccin (
 	id_stockage_vaccin SERIAL PRIMARY KEY,
 	date_stockage      DATE   NOT NULL
 );
 
-CREATE TABLE donnees_hospitaliere(
+CREATE TABLE donnees_hospitaliere (
 	dep                     VARCHAR NOT NULL REFERENCES departement ON UPDATE CASCADE ON DELETE CASCADE,	
 	sexe                    INTEGER NOT NULL CHECK (sexe >=0 AND sexe<=2),
 	jour                    DATE NOT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE donnees_hospitaliere(
 	PRIMARY KEY (dep, sexe, jour)
 );
 
-CREATE TABLE rendez_vous_par_departement(
+CREATE TABLE rendez_vous_par_departement (
 	id_departement     VARCHAR REFERENCES departement ON UPDATE CASCADE ON DELETE CASCADE,
 	rang_vaccinal      INTEGER NOT NULL,
 	date_debut_semaine Date    NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE rendez_vous_par_departement(
 	PRIMARY kEY (id_departement, rang_vaccinal, date_debut_semaine)
 );
 
-CREATE TABLE test(
+CREATE TABLE test (
 	id_departement  VARCHAR NOT NULL,
 	jour            DATE,
 	pop             INTEGER NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE test(
 	  REFERENCES departement(code_departement) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE adresse(
+CREATE TABLE adresse (
 	id_adresse 	SERIAL PRIMARY KEY,
 	adr_num 	VARCHAR ,
 	adr_voie 	VARCHAR,
@@ -92,7 +92,7 @@ CREATE TABLE adresse(
 	com_nom 	VARCHAR 
 );
 
-CREATE TABLE lieu_de_vaccination(
+CREATE TABLE lieu_de_vaccination (
 	gid 				VARCHAR PRIMARY KEY,
 	nom 				VARCHAR ,
 	id_adr 				VARCHAR ,
@@ -133,8 +133,8 @@ CREATE TABLE site_prelevement_pour_les_tests (
 	cpl_loc 		VARCHAR,
 	do_prel 		VARCHAR NOT NULL,
 	do_antigenic 	VARCHAR NOT NULL,
-	longitude 		FLOAT ,
-	latitude 		FLOAT ,
+	longitude 		FLOAT,
+	latitude 		FLOAT,
 	mod_prel 		VARCHAR ,
 	public 			VARCHAR ,
 	horaire 		VARCHAR,
@@ -145,7 +145,7 @@ CREATE TABLE site_prelevement_pour_les_tests (
 	date_modif 		DATE
 );
 
-CREATE TABLE stockage_vaccin_departement(
+CREATE TABLE stockage_vaccin_departement (
 	code_departement    VARCHAR REFERENCES departement ON UPDATE CASCADE ON DELETE CASCADE,
 	id_stockage_vaccin INTEGER  REFERENCES stockage_vaccin ON UPDATE CASCADE ON DELETE CASCADE,
 	id_vaccin          INTEGER REFERENCES vaccin ON UPDATE CASCADE ON DELETE CASCADE,
@@ -200,7 +200,7 @@ CREATE TABLE adresse_trigger (
 	reserve_professionels_sante Boolean
 );
 
-CREATE TABLE stocks_doses_vaccin_trigger(
+CREATE TABLE stocks_doses_vaccin_trigger (
 	code_departement  VARCHAR,
 	departement VARCHAR,
 	type_de_vaccin VARCHAR,
@@ -209,7 +209,7 @@ CREATE TABLE stocks_doses_vaccin_trigger(
 	_date Date 
 );
 
-CREATE TABLE rendez_vous_par_departement_trigger(
+CREATE TABLE rendez_vous_par_departement_trigger (
 	code_region        VARCHAR ,
 	region             VARCHAR,
 	dep                VARCHAR,
