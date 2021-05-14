@@ -263,7 +263,8 @@ BEGIN
 
     SELECT _dep INTO test_exist FROM vaccination WHERE dep = _dep AND jour = _jour AND vaccin = test_vaccin;
     IF (NOT FOUND) 
-        THEN  INSERT INTO vaccination VALUES (_dep, test_vaccin, _jour, ntotdos1, ntotdos2);
+        THEN  
+            INSERT INTO vaccination VALUES (_dep, test_vaccin, _jour, ntotdos1, ntotdos2);
     ELSE UPDATE vaccination set n_tot_dos1 = n_tot_dos1 + ntotdos1,   n_tot_dos2 = n_tot_dos2 + ntotdos2 
                 WHERE dep = _dep AND jour = _jour AND vaccin = test_vaccin;
     END IF;

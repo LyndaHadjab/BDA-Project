@@ -92,3 +92,17 @@ SELECT dep, sum(n_tot_dos1) as total_dep_dos1, sum(n_tot_dos2) as total_dep_dos2
 FROM vaccination
 GROUP BY dep
 ORDER BY dep;
+
+/* insert into vaccination */
+SELECT vaccination_insert ('1', 'Pfizer', '2025-05-12', 232, 432);
+/* Afficher le tuple insérer*/
+\echo l''insertion est bien effectuer;
+SELECT * FROM vaccination WHERE dep = '1' and jour = '2025-05-12' and 
+    vaccin In (select id_vaccin FROM vaccin WHERE type_de_vaccin = 'Pfizer');
+
+/* suppression d'un vaccination */
+SELECT vaccination_delete ('1', 'Pfizer', '2025-05-12');
+
+\echo la suppression est bien effectuer;
+SELECT * FROM vaccination WHERE dep = '1' and jour = '2025-05-12' and 
+    vaccin In (select id_vaccin FROM vaccin WHERE type_de_vaccin = 'Pfizer');
