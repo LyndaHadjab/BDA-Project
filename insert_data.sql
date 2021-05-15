@@ -1,4 +1,4 @@
-\set path '/home/aurora/Bureau/projetBDD/DonneesCsv/'
+\set path '/home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/DonneesCsv/'
 \set file 'centres-vaccination.csv'
 \set pf :path:file 
 \set quoted_myvariable '\'' :pf '\''
@@ -639,7 +639,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-/* Modifier le gid d'un lieu de vaccination */
+/* Modifier le gid */
 CREATE OR REPLACE FUNCTION edit_gid_lieu_de_vaccination(_gid TEXT, new_gid TEXT) RETURNS void as 
 $$
 DECLARE ligne_1 RECORD;

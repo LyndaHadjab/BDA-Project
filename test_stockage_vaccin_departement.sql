@@ -1,4 +1,4 @@
-\i /home/aurora/Bureau/projetBDD/create_all.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_all.sql;
 
 /* Function search selon le type de vaccin / selon la date / selon le départemen*/
 

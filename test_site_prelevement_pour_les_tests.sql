@@ -1,4 +1,4 @@
-\i /home/aurora/Bureau/projetBDD/create_all.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_all.sql;
 
 /* fonction pour insérer un site*/
 CREATE OR REPLACE FUNCTION insert_site_prelevement_pour_les_tests(

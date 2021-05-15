@@ -1,4 +1,5 @@
-\i /home/aurora/Bureau/projetBDD/create_all.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_all.sql;
+
 /* Pour tester la table vaccin */
 /*selectionner les type de vaccin existant */
 \echo Les vaccin développés sont :;

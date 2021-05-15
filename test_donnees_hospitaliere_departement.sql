@@ -1,3 +1,5 @@
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_all.sql;
+
 /* Function 1 : Une fonction qui permet de chercher toutes les données hospitaliere par département */
 
 CREATE OR REPLACE FUNCTION select_donnees_hospi_departement(code_departement VARCHAR) 

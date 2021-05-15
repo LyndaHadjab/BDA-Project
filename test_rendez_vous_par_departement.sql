@@ -1,4 +1,4 @@
-\i /home/aurora/Bureau/projetBDD/create_all.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_all.sql;
 
 /* Effectuer un ensemble de test sur la table rendez_vous_par_departement */
 PREPARE select_new_insertion(text, int, date) AS 

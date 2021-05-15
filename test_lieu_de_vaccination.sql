@@ -1,4 +1,4 @@
-\i /home/aurora/Bureau/projetBDD/create_all.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_all.sql;
 
 /* Fonctions sur la table de lieu_de_vaccination */
 

@@ -226,5 +226,5 @@ CREATE INDEX site_prelevement_pour_les_tests_rs ON site_prelevement_pour_les_tes
 CREATE INDEX adresse_adr_voie ON adresse (adr_voie);
 CREATE INDEX adresse_com_nom ON adresse (com_nom);
 
-\i /home/aurora/Bureau/projetBDD/create_trigger.sql;
-\i /home/aurora/Bureau/projetBDD/insert_data.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/create_trigger.sql;
+\i /home/aurora/Bureau/projet_bdd_Lynda_Hanane_Hadjab/insert_data.sql;
