@@ -4,7 +4,7 @@ BEGIN
 	New.code_departement = LTRIM(New.code_departement, '0');
 	PERFORM * FROM departement WHERE code_departement = NEW.code_departement 
 		OR nom_departement = NEW.nom_departement;
-	IF (FOUND) THEN RAISE 'le département avec le nom % et le code % existe déjà',NEW.nom_departement,NEW.code_departement;
+	IF (FOUND) THEN RAISE 'le département avec le nom % , le code % existe déjà',NEW.nom_departement,NEW.code_departement;
 	END IF;
 	RETURN NEW;
 END;
@@ -116,15 +116,20 @@ $$
 DECLARE ligne VARCHAR;
 DECLARE ligne_1 VARCHAR;
 BEGIN
+	IF (NEW.n_tot_dos1 < 0) THEN RAISE 'le nombre total de dose 1 doit etre supérieure à zéro';
+	END IF;
+
+	IF (NEW.n_tot_dos2 < 0) THEN RAISE 'le nombre total de dose 2 doit etre supérieure à zéro';
+	END IF;
 	New.dep = LTRIM(New.dep, '0');
 
-	SELECT code_departement INTO ligne FROM departement  WHERE code_departement = New.dep; 
-	SELECT type_de_vaccin INTO ligne_1 FROM vaccin  WHERE id_vaccin = New.vaccin; 
-	
+	SELECT code_departement INTO ligne FROM departement  WHERE code_departement = New.dep;
+	SELECT type_de_vaccin INTO ligne_1 FROM vaccin  WHERE id_vaccin = New.vaccin;
+
 	IF (ligne != '' and ligne_1 != '') THEN  RETURN New;
 	END IF;
+
 	RETURN NULL;
-	
 END;
 $$ LANGUAGE PLPGSQL;
 
@@ -193,9 +198,19 @@ CREATE TRIGGER rendez_vous_par_departement_audit
 
 CREATE OR REPLACE FUNCTION vaccin_trigger_audit() RETURNS TRIGGER AS
 $$
+DECLARE val Integer;
+DECLARE test Integer;
 BEGIN
 	PERFORM * FROM vaccin WHERE type_de_vaccin = New.type_de_vaccin;
 	IF (FOUND) THEN RAISE 'ce type de vaccin % existe déjà dans la table',New.type_de_vaccin;
+	END IF;
+	SELECT count(*) into test FROM vaccin;
+
+	IF (TG_OP = 'INSERT') THEN
+		SELECT max(id_vaccin) into val FROM vaccin;
+		IF (val IS NULL) THEN val = 0; New.id_vaccin = val;
+		ELSE New.id_vaccin = val + 1;
+		END IF;
 	END IF;
 
 	RETURN NEW;
@@ -236,7 +251,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE TRIGGER lieu_de_vaccination_trigger
+CREATE TRIGGER stockage_vaccin_trigger
 	BEFORE INSERT OR UPDATE 
 	ON stockage_vaccin
 	FOR EACH ROW 

@@ -1,38 +1,42 @@
+\i /home/aurora/Bureau/projetBDD/create_all.sql;
 /* Pour tester la table vaccin */
 /*selectionner les type de vaccin existant */
-SELECT  * FROM vaccin;
+\echo Les vaccin développés sont :;
+SELECT * FROM vaccin;
 
 /* Inserer un nouveau type de vaccin*/
-SELECT  vaccin_insert('newVaccin');
-SELECT  * FROM vaccin;
+SELECT vaccin_insert('newVaccin');
+\echo le tuple est bien insérer ;
+SELECT * FROM vaccin;
 
 /*Inserer un vaccin déjà existant*/
-SELECT  vaccin_insert('Pfizer');
-SELECT  * FROM vaccin;
+SELECT vaccin_insert('Pfizer');
+SELECT * FROM vaccin;
 
 /*Modifier le nom d'un vaccin */
-SELECT  vaccin_update('Moderna', 'testedit');
-SELECT  * FROM vaccin;
+SELECT vaccin_update('Moderna', 'testedit');
+\echo le tuple est bien modifier ;
+SELECT * FROM vaccin;
 
 /* Essaye de modifier un vaccin inexistant*/
-SELECT  vaccin_update('inexistant', 'testedit');
-SELECT  * FROM vaccin;
+SELECT vaccin_update('inexistant', 'testedit');
+SELECT * FROM vaccin;
 
 /*Essayer de modifier un nom de vaccin par un nom déjà existant*/
-SELECT  vaccin_update('AstraZeneca', 'Pfizer');
-SELECT  * FROM vaccin;
+SELECT vaccin_update('AstraZeneca', 'Pfizer');
+SELECT * FROM vaccin;
 
 /* Supprimer un vaccin qui  n'est pas encore réferent (Cascade)*/
-SELECT  vaccin_delete('newVaccin');
-SELECT  * FROM vaccin;
+SELECT vaccin_delete('newVaccin');
+SELECT * FROM vaccin;
 
 /*Supprimer un vaccin inexistant*/
-SELECT  vaccin_delete('inexistant');
-SELECT  * FROM vaccin;
+SELECT vaccin_delete('inexistant');
+SELECT * FROM vaccin;
 
 /*Supprimer un vaccin réferent par un tuple (Cascade)*/
-SELECT  vaccin_delete('Pfizer');
-SELECT  * FROM vaccin;
+SELECT vaccin_delete('Pfizer');
+SELECT * FROM vaccin;
 
 /*retourner le nombre de dos1 et dos2 effectuer dans un département à une date donné avec un vaccin*/
 
@@ -56,19 +60,8 @@ BEGIN
 END;
 $$LANGUAGE PLPGSQL;
 
-/* test the function */
-SELECT * FROM select_ntotdos1_ntotdos2('1','2021-04-05', 'AstraZeneca');
-SELECT vaccination_insert('1','AstraZeneca','2021-04-10',12,23);
-SELECT * FROM select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
-select vaccination_update_dos1('1','AstraZeneca','2021-04-10',120);
-select vaccination_update_dos2('1','AstraZeneca','2021-04-10',230);
-SELECT * FROM select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
-select vaccination_delete('1','AstraZeneca','2021-04-10');
-SELECT * FROM select_ntotdos1_ntotdos2_between('1','2021-04-05','2021-04-10','AstraZeneca');
-SELECT vaccin_insert('Pfizer');
-
 /*-------------------------------------------------------*/
-/* le stockage d'un vaccin à une date donné et à une date donné */
+/* le stockage d'un vaccin à une date donné  */
 
 CREATE OR REPLACE FUNCTION test_vaccin_with_stockage_vaccin(_dep VARCHAR, _jour DATE, type_vaccin VARCHAR) 
         RETURNS SETOF stockage_vaccin_departement AS
@@ -119,10 +112,14 @@ INSERT INTO test VALUES ('176865445','2020-05-13',-1,40);
 /* si on essaye d'inserer un département inexistant , le trigger correspondant est déclanché */
 INSERT INTO test VALUES ('176865445','2020-05-13',1,40);
 
+\echo le contenu de la 'table vaccin' est ;
+SELECT * FROM vaccin;
 /* Si on essaye d'inserer un vaccin déjà existant , le trigger se déclanche et raise */
-INSERT INTO vaccin(type_de_vaccin) values('Pfizer');
+INSERT INTO vaccin(type_de_vaccin) values('Tous vaccins');
 /* sinon */
 INSERT INTO vaccin(type_de_vaccin) values('test');
+\echo le tuple est bien inserer dans la 'table vaccin':;
+SELECT * FROM vaccin;
 
 /* Si on essaye de modifierun vaccin (type) par un type déjà existant , le trigger se déclanche et raise */
 UPDATE vaccin set type_de_vaccin = 'Pfizer' where type_de_vaccin='test';

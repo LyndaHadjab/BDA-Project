@@ -1,3 +1,5 @@
+\i /home/aurora/Bureau/projetBDD/create_all.sql;
+
 /* Function search selon le type de vaccin / selon la date / selon le départemen*/
 
 /* Fonction 1: stockage de vaccin par département, jour, type vaccin  */

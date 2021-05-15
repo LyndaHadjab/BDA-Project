@@ -1,4 +1,3 @@
-
 /* Function 1 : Une fonction qui permet de chercher toutes les données hospitaliere par département */
 
 CREATE OR REPLACE FUNCTION select_donnees_hospi_departement(code_departement VARCHAR) 
@@ -12,7 +11,6 @@ BEGIN
     RETURN;
 END;
 $$ LANGUAGE PLPGSQL;
-
 
 /* Function 2: Une fonction qui permet de retourner la données hositaliere par jour de chaque département */
 
@@ -29,8 +27,6 @@ BEGIN
     RETURN;
 END;
 $$ LANGUAGE PLPGSQL;
-
-
 
 /*Function 3: une fonction qui retourne une donnees hopitaliere de département par sexe & jour  */
 
@@ -53,7 +49,6 @@ $$ LANGUAGE PLPGSQL;
 /* Function 1 */
 SELECT dep, hosp, rea, HospConv, SSR_USLD, rad, dc FROM select_donnees_hospi_departement('1');
 SELECT dep, hosp, rea, HospConv, SSR_USLD, rad, dc FROM select_donnees_hospi_departement('678');
-
 
 /* Function 2 */
 

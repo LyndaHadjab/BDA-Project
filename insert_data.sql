@@ -42,7 +42,7 @@ INSERT INTO vaccin (id_vaccin, type_de_vaccin) VALUES (4, 'Janssen');
 
 COPY site_prelevement_pour_les_tests FROM  :quoted_myvariable DELIMITER ',' CSV HEADER;
 
-\set file 'vacsi-tot-v-dep-2021-05-13-19h09.csv'
+\set file 'vacsi-tot-v-dep-2021-05-14-19h05.csv'
 \set pf :path:file 
 \set quoted_myvariable '\'' :pf '\''
 
@@ -54,7 +54,7 @@ COPY vaccination FROM :quoted_myvariable DELIMITER ';' CSV HEADER;
 
 COPY donnees_hospitaliere(dep, sexe, jour, hosp, rea, HospConv, SSR_USLD, autres, rad, dc) FROM :quoted_myvariable DELIMITER ';'  CSV HEADER;
 
-\set file '2021-04-01-prise-rdv-par-dep.csv'
+\set file '2021-05-13-prise-rdv-par-dep.csv'
 \set pf :path:file 
 \set quoted_myvariable '\'' :pf '\''
 
@@ -68,13 +68,15 @@ COPY rendez_vous_par_departement_trigger  FROM :quoted_myvariable DELIMITER ',' 
 CREATE OR REPLACE FUNCTION vaccin_insert(type_vaccin TEXT) RETURNS VOID AS 
 $$
 DECLARE id INTEGER;
+DECLARE last_value INTEGER;
+
 BEGIN
     IF (type_vaccin = '') 
         THEN RAISE 'Le type doit pas etre null'; 
     END IF;
-
+    SELECT max(id_vaccin) into last_value FROM vaccin;
     SELECT id_vaccin INTO id FROM vaccin WHERE type_de_vaccin = type_vaccin;
-    IF (NOT FOUND) THEN INSERT INTO vaccin (type_de_vaccin) VALUES (type_vaccin);
+    IF (NOT FOUND) THEN INSERT INTO vaccin (id_vaccin, type_de_vaccin) VALUES (last_value+1, type_vaccin);
         ELSE RAISE 'le vaccin % existe  deja dans la base ', type_vaccin;
     END IF;
 END;
@@ -117,7 +119,6 @@ BEGIN
 END;
 $$  LANGUAGE PLPGSQL;
 
-
 /* pour la table  departement */
 
 /* insertion */
@@ -132,7 +133,6 @@ BEGIN
 END;
 $$  LANGUAGE PLPGSQL;
 
-
 /* suppression par code departement */
 CREATE OR REPLACE FUNCTION departement_delete_code(codedepartement TEXT) RETURNS VOID AS 
 $$
@@ -144,7 +144,6 @@ BEGIN
     END IF;
 END;
 $$  LANGUAGE PLPGSQL;
-
 
 /* suppression par nom  du departement */
 CREATE OR REPLACE FUNCTION departement_delete_nom(nomdepartement TEXT) RETURNS VOID AS 
@@ -228,7 +227,7 @@ $$  LANGUAGE PLPGSQL;
 
 /* suppression d'une adresse par id */
 
-CREATE OR REPLACE FUNCTION  adresse_delete_by_id(id INTEGER) RETURNS VOID AS 
+CREATE OR REPLACE FUNCTION adresse_delete_by_id(id INTEGER) RETURNS VOID AS 
 $$
 DECLARE element RECORD;
 BEGIN
@@ -322,14 +321,13 @@ $$
 DECLARE test_dep VARCHAR;
 DECLARE ligne RECORD;
 DECLARE id INTEGER;
-
 BEGIN
-    IF (ntotdos2 < 0) 
+    IF (ntotdos2 < 0)
         THEN  RAISE 'le nombre de dos doit etre supérieure ou égale à zéro'; 
     END IF;
 
     SELECT code_departement INTO test_dep FROM departement WHERE code_departement = _dep;
-    IF (NOT FOUND) 
+    IF (NOT FOUND)
         THEN RAISE 'le département % n''existe pas dans la table departement',_dep;
     END IF;
 
@@ -342,6 +340,8 @@ BEGIN
     UPDATE vaccination SET n_tot_dos2 = ntotdos2 WHERE dep = _dep AND vaccin = id AND jour = _jour;
 END;
 $$  LANGUAGE PLPGSQL;
+
+/* La table Test*/
 /* ajouter une donnée test*/
 
 CREATE OR REPLACE FUNCTION test_insert(id_dep TEXT, _jour DATE, _pop INTEGER, _t INTEGER) RETURNS VOID AS 
@@ -500,7 +500,8 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-/* ajouter un rendez vous par département*/
+/* La table rendez vous par département */
+/* Insertion */
 CREATE OR REPLACE FUNCTION rendez_vous_par_departement_add(
                         dep VARCHAR, rangvaccinal INTEGER, datedebutsemaine DATE, _nb INTEGER) RETURNS VOID AS
 $$
@@ -635,5 +636,24 @@ BEGIN
             _rdv, _date_fermeture, _date_ouverture, 
             _rdv_tel, _rdv_consultation_prevaccination
             );
+END;
+$$ LANGUAGE PLPGSQL;
+
+/* Modifier le gid d'un lieu de vaccination */
+CREATE OR REPLACE FUNCTION edit_gid_lieu_de_vaccination(_gid TEXT, new_gid TEXT) RETURNS void as 
+$$
+DECLARE ligne_1 RECORD;
+DECLARE ligne_2 RECORD;
+BEGIN
+
+   PERFORM * FROM lieu_de_vaccination WHERE gid = _gid;
+   IF (NOT FOUND) THEN RAISE 'Le gid % existe déjà dans la base de donnée ', _gid ;
+   END IF;
+
+   PERFORM * FROM lieu_de_vaccination WHERE gid = new_gid;
+   IF (FOUND) THEN RAISE 'Le new gid % existe déjà dans la base de donnée ', new_gid ;
+   END IF;
+
+   UPDATE lieu_de_vaccination SET gid = new_gid WHERE gid = _gid;
 END;
 $$ LANGUAGE PLPGSQL;

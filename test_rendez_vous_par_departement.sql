@@ -1,3 +1,5 @@
+\i /home/aurora/Bureau/projetBDD/create_all.sql;
+
 /* Effectuer un ensemble de test sur la table rendez_vous_par_departement */
 PREPARE select_new_insertion(text, int, date) AS 
     SELECT * FROM rendez_vous_par_departement WHERE date_debut_semaine = $3 

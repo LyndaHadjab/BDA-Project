@@ -1,3 +1,5 @@
+\i /home/aurora/Bureau/projetBDD/create_all.sql;
+
 /* Fonctions sur la table de lieu_de_vaccination */
 
 /* Function 1: retourner les rendez d'un nom de centre a une journée donnée */
