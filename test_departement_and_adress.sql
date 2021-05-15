@@ -87,3 +87,13 @@ INSERT INTO departement VALUES ('9997', 'test no equal', '76', 'testRegion2');
 /* si on essaye d'insérer une adresse existante
 le trigger se déclanchera avec une exception*/
 Insert INTO adresse VALUES ('1', 'Rue Joseph Cugnot test rue', '54000', '54395', 'Nancy');
+
+/* nombre de test effectuer à une date donné dans un département */
+SELECT SUM(t), code_departement, nom_departement
+    FROM departement NATURAL JOIN test
+    WHERE code_departement = '1' 
+    and (jour >= '2020-05-13' and jour <= '2020-05-16')
+    GROUP BY code_departement, nom_departement;
+
+/* le nombre de personne dans un département qui n'ont pas fait un test*/
+SELECT pop - t as nombre_de_personne_nont_pas_fait_de_test from test where id_departement = '1' and jour = '2020-05-13';
